@@ -47,9 +47,7 @@ class SalesmanController extends Controller
             DB::beginTransaction();
             $salesman = new Salesman($validated);
             $salesman->save();
-
-            $titles = Title::whereIn('name', array_merge($validated['titles_before'], $validated['titles_after']))->pluck('id');
-            $salesman->titles()->sync($titles);
+            $salesman->saveTitles(array_merge($validated['titles_before'], $validated['titles_after']));
             DB::commit();
             return new SalesmanResource($salesman);
         } catch (Exception $e) {
@@ -85,8 +83,7 @@ class SalesmanController extends Controller
             );
 
             $salesman->update($validated);
-            $titles = Title::whereIn('name', array_merge($validated['titles_before'], $validated['titles_after']))->pluck('id');
-            $salesman->titles()->sync($titles);
+            $salesman->saveTitles(array_merge($validated['titles_before'], $validated['titles_after']));
             DB::commit();
 
             return new SalesmanResource($salesman);

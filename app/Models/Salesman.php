@@ -38,4 +38,10 @@ class Salesman extends Model
     {
         return $this->belongsToMany(Title::class, 'salesman_title', 'salesman_id');
     }
+
+    public function saveTitles(array $titles)
+    {
+        $titles = Title::whereIn('name', $titles)->pluck('id');
+        $this->titles()->sync($titles);
+    }
 }
