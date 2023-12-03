@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->integer("prosight_id")->unique();
             $table->string('email');
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->foreignId('gender_id')->references('id')->on('genders');
             $table->foreignId('marital_status_id')->nullable()->references('id')->on('marital_statuses');
             $table->timestamps(3);

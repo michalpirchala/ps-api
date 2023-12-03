@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -37,16 +38,25 @@ class Handler extends ExceptionHandler
                 ], $e->getStatusCode());
             }
 
-            if ($e instanceof HttpException) {
+            if ($e instanceof ValidationException) {
                 return response()->json([
                     'errors' => [
-                        "code" => "HTTP_ERROR",
-                        "message" => $e->getMessage(),
+                        "code" => "VALIDATION_ERROR",
+                        "message" => $e->errors(),
                     ],
-                ], $e->getStatusCode());
+                ], $e->status);
             }
 
             if (!config('app.debug')) {
+                if ($e instanceof HttpException) {
+                    return response()->json([
+                        'errors' => [
+                            "code" => "HTTP_ERROR",
+                            "message" => $e->getMessage(),
+                        ],
+                    ], $e->getStatusCode());
+                }
+
                 return response()->json([
                     'errors' => [
                         "code" => "SERVER_ERROR",
