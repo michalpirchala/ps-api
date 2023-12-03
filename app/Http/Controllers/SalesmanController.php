@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Http\Resources\SalesmanCollection;
 use App\Http\Resources\SalesmanResource;
 use App\Models\Salesman;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Spatie\FlareClient\Api;
@@ -42,20 +43,29 @@ class SalesmanController extends Controller
         try {
             return new SalesmanResource(Salesman::findOrFail($id));
         } catch (ModelNotFoundException $e) {
-            // since I can't get entity name and proper code from ModelNotFoundException,
-            // I decided to throw ApiException here directly
-            throw (new ApiException(404, "", $e))
-                ->addError("PERSON_NOT_FOUND", "Object_name with such uuid not found. [Salesman \"$id\" not found.]");
+            abortNotFound($e, "PERSON_NOT_FOUND", "Salesman", $id);
         }
     }
 
     public function update(string $id)
     {
+        try {
+            $salesman = Salesman::findOrFail($id);
 
+            return new SalesmanResource($salesman);
+        } catch (ModelNotFoundException $e) {
+            abortNotFound($e, "PERSON_NOT_FOUND", "Salesman", $id);
+        }
     }
 
     public function destroy(string $id)
     {
-
+        try {
+            $salesman = Salesman::findOrFail($id);
+            $salesman->delete();
+            return response()->json(null, 204);
+        } catch (ModelNotFoundException $e) {
+            abortNotFound($e, "PERSON_NOT_FOUND", "Salesman", $id);
+        }
     }
 }

@@ -46,12 +46,14 @@ class Handler extends ExceptionHandler
                 ], $e->getStatusCode());
             }
 
-            return response()->json([
-                'errors' => [
-                    "code" => "SERVER_ERROR",
-                    "message" => "Unexpected server error",
-                ],
-            ], 500);
+            if (!config('app.debug')) {
+                return response()->json([
+                    'errors' => [
+                        "code" => "SERVER_ERROR",
+                        "message" => "Unexpected server error",
+                    ],
+                ], 500);
+            }
         });
     }
 }
