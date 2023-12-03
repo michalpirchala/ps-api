@@ -2,8 +2,12 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
+use Illuminate\Http\Request;
 
 class Handler extends ExceptionHandler
 {
@@ -25,6 +29,29 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+        $this->renderable(function (\Exception $e, Request $request) {
+            if ($e instanceof ApiException) {
+                return response()->json([
+                    'errors' => $e->errors(),
+                ], $e->getStatusCode());
+            }
+
+            if ($e instanceof HttpException) {
+                return response()->json([
+                    'errors' => [
+                        "code" => "HTTP_ERROR",
+                        "message" => $e->getMessage(),
+                    ],
+                ], $e->getStatusCode());
+            }
+
+            return response()->json([
+                'errors' => [
+                    "code" => "SERVER_ERROR",
+                    "message" => "Unexpected server error",
+                ],
+            ], 500);
         });
     }
 }

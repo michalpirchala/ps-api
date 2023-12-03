@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GenderResource extends JsonUnescapedResource
+class CodelistResource extends JsonUnescapedResource
 {
     /**
      * Transform the resource into an array.
@@ -14,9 +14,6 @@ class GenderResource extends JsonUnescapedResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'code' => $this->code,
-            'name' => $this->name,
-        ];
+        return parent::toArray($request);
     }
 }

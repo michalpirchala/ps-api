@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CodelistCollection;
+use App\Http\Resources\CodelistResource;
 use App\Http\Resources\GenderCollection;
 use App\Http\Resources\MaritalStatusCollection;
 use App\Http\Resources\TitleCollection;
@@ -14,11 +16,11 @@ class CodelistController extends Controller
 {
     public function show()
     {
-        return response()->json([
+        return new CodelistResource([
             'marital_statuses' => new MaritalStatusCollection(MaritalStatus::all()),
             'genders' => new GenderCollection(Gender::all()),
             'titles_before' => New TitleCollection(Title::where('type', Title::TYPE_BEFORE)->orderBy('id')->get()),
             'titles_after' => New TitleCollection(Title::where('type', Title::TYPE_AFTER)->orderBy('id')->get()),
-        ], 200, [], JSON_UNESCAPED_UNICODE);
+        ]);
     }
 }

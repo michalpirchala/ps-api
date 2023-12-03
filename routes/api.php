@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CodelistController;
+use App\Http\Controllers\SalesmanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/codelists', [CodelistController::class, 'show']);
+Route::controller(SalesmanController::class)->group(function () {
+    Route::get('/salesmen', 'index');
+    Route::post('/salesmen', 'store');
+    Route::get('/salesmen/{id}', 'show');
+    Route::put('/salesmen/{id}', 'update');
+    Route::delete('/salesmen/{id}', 'destroy');
+});

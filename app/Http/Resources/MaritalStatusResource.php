@@ -6,7 +6,7 @@ use App\Models\MaritalStatusName;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MaritalStatusResource extends JsonResource
+class MaritalStatusResource extends JsonUnescapedResource
 {
     /**
      * Transform the resource into an array.
